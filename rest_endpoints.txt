@@ -1,0 +1,3 @@
+# rest_endpoints.txt
+GET /api/users
+GET /api/users/{id}
