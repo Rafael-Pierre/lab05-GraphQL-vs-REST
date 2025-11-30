@@ -1,300 +1,145 @@
-\# Documento do Experimento — Sprint 1
+# Documento do Experimento - Sprint 1
 
 
 
-\## 1. Hipóteses
+## 1. Hipóteses
 
 
 
-\* \*\*H0 (Hipótese nula):\*\* Não há diferença significativa no tempo de resposta entre a API REST e a API GraphQL.
+* **H0 (Hipótese nula):** Não há diferença significativa no tempo de resposta entre a API REST e a API GraphQL.
 
-\* \*\*H1 (Hipótese alternativa):\*\* Há diferença significativa no tempo de resposta entre a API REST e a API GraphQL.
+* **H1 (Hipótese alternativa):** Há diferença significativa no tempo de resposta entre a API REST e a API GraphQL.
 
 
 
-\## 2. Variáveis
+## 2. Variáveis
 
 
 
-\### Variável Independente
+### Variável Independente
 
 
 
-\* Tipo de API (REST ou GraphQL)
+* Tipo de API (REST ou GraphQL)
 
 
 
-\### Variáveis Dependentes
+### Variáveis Dependentes
 
 
 
-\* Tempo de resposta (ms)
+* Tempo de resposta (ms)
 
-\* Latência média
+* Latência média
 
-\* Número de requisições por segundo
+* Número de requisições por segundo
 
-\* Taxa de erro
+* Taxa de erro
 
 
 
-\## 3. Tratamentos
+## 3. Tratamentos
 
 
 
-\* T1: API REST
+* T1: API REST
 
-\* T2: API GraphQL
+* T2: API GraphQL
 
 
 
-\## 4. Objetos Experimentais
+## 4. Objetos Experimentais
 
 
 
-\* Conjunto de operações CRUD aplicadas sobre a mesma base de dados:
+* Conjunto de operações CRUD aplicadas sobre a mesma base de dados:
 
 
 
-&nbsp; \* Criar Cliente
+&nbsp; * Criar Cliente
 
-&nbsp; \* Atualizar Cliente
+&nbsp; * Atualizar Cliente
 
-&nbsp; \* Listar Clientes
+&nbsp; * Listar Clientes
 
-&nbsp; \* Buscar Cliente por ID
+&nbsp; * Buscar Cliente por ID
 
-&nbsp; \* Remover Cliente
+&nbsp; * Remover Cliente
 
 
 
-\## 5. Tipo de Projeto Experimental
+## 5. Tipo de Projeto Experimental
 
 
 
-\* Projeto \*\*intragruppo\*\*, com execução de ambos os tratamentos sobre a mesma infraestrutura.
+* Projeto **intragruppo**, com execução de ambos os tratamentos sobre a mesma infraestrutura.
 
 
 
-\## 6. Quantidade de Medições
+## 6. Quantidade de Medições
 
 
 
-\* 100 execuções por operação para cada API.
+* 100 execuções por operação para cada API.
 
-\* Total esperado: 500 medições REST e 500 medições GraphQL.
+* Total esperado: 500 medições REST e 500 medições GraphQL.
 
 
 
-\## 7. Ameaças à Validade
+## 7. Ameaças à Validade
 
 
 
-\### Validade Interna
+### Validade Interna
 
 
 
-\* Processos concorrentes na máquina podem influenciar o tempo de resposta.
+* Processos concorrentes na máquina podem influenciar o tempo de resposta.
 
-\* Falhas temporárias na rede podem alterar resultados.
+* Falhas temporárias na rede podem alterar resultados.
 
 
 
-\### Validade Externa
+### Validade Externa
 
 
 
-\* Resultados podem não representar ambientes de produção reais.
+* Resultados podem não representar ambientes de produção reais.
 
 
 
-\### Validade de Construção
+### Validade de Construção
 
 
 
-\* Scripts de medição podem conter vieses.
+* Scripts de medição podem conter vieses.
 
 
 
-\## 8. Preparação do Experimento
+## 8. Preparação do Experimento
 
 
 
-\* Utilização de \*\*Docker\*\* para padronizar ambiente.
+* Utilização de **Docker** para padronizar ambiente.
 
-\* Banco MariaDB previamente populado com 1.000 clientes.
+* Banco MariaDB previamente populado com 1.000 clientes.
 
-\* Scripts Python serão utilizados para medição automatizada.
+* Scripts Python serão utilizados para medição automatizada.
 
-\* A API REST e GraphQL serão executadas na mesma máquina.
+* A API REST e GraphQL serão executadas na mesma máquina.
 
 
 
-\## 9. Ferramentas
+## 9. Ferramentas
 
 
 
-\* Docker / Docker Compose
+* Docker / Docker Compose
 
-\* Python 3
+* Python 3
 
-\* MariaDB 10+
+* MariaDB 10+
 
-\* Apache Bench / Python Requests
+* Apache Bench / Python Requests
 
-\* Ambiente Unix/MacOS
-
-
-
----
-
-
-
-\*Documento referente à Sprint 1 do Lab05.\*
-
-
-
-```text
-
-\# docker-compose.yml
-
-version: '3.8'
-
-services:
-
-&nbsp; api:
-
-&nbsp;   image: node:18
-
-&nbsp;   working\_dir: /app
-
-&nbsp;   volumes:
-
-&nbsp;     - ./app:/app
-
-&nbsp;   command: \["npm", "start"]
-
-&nbsp;   ports:
-
-&nbsp;     - "4000:4000"
-
-&nbsp; db:
-
-&nbsp;   image: mariadb:10.6
-
-&nbsp;   environment:
-
-&nbsp;     MYSQL\_ROOT\_PASSWORD: root
-
-&nbsp;     MYSQL\_DATABASE: experiment
-
-&nbsp;   ports:
-
-&nbsp;     - "3306:3306"
-
-
-
-\# measure\_rest.py
-
-import requests, time, json
-
-URL = "http://localhost:4000/api/rest/test"
-
-results = \[]
-
-for \_ in range(100):
-
-&nbsp;   start = time.time()
-
-&nbsp;   r = requests.get(URL)
-
-&nbsp;   elapsed = time.time() - start
-
-&nbsp;   results.append({"time": elapsed, "size": len(r.content)})
-
-with open("rest\_results.json", "w") as f:
-
-&nbsp;   json.dump(results, f, indent=2)
-
-
-
-\# measure\_graphql.py
-
-import requests, time, json
-
-URL = "http://localhost:4000/graphql"
-
-query = {"query": "{ users { id name email } }"}
-
-results = \[]
-
-for \_ in range(100):
-
-&nbsp;   start = time.time()
-
-&nbsp;   r = requests.post(URL, json=query)
-
-&nbsp;   elapsed = time.time() - start
-
-&nbsp;   results.append({"time": elapsed, "size": len(r.content)})
-
-with open("graphql\_results.json", "w") as f:
-
-&nbsp;   json.dump(results, f, indent=2)
-
-
-
-\# schema.sql
-
-CREATE TABLE users (
-
-&nbsp; id INT AUTO\_INCREMENT PRIMARY KEY,
-
-&nbsp; name VARCHAR(100),
-
-&nbsp; email VARCHAR(100)
-
-);
-
-
-
-\# seed.sql
-
-INSERT INTO users (name, email) VALUES
-
-('Alice', 'alice@example.com'),
-
-('Bob', 'bob@example.com'),
-
-('Carol', 'carol@example.com');
-
-
-
-\# rest\_endpoints.txt
-
-GET /api/users
-
-GET /api/users/{id}
-
-
-
-\# graphql\_queries.graphql
-
-{
-
-&nbsp; users {
-
-&nbsp;   id
-
-&nbsp;   name
-
-&nbsp;   email
-
-&nbsp; }
-
-}
-
-```
-
-
-
+* Ambiente Unix/MacOS
