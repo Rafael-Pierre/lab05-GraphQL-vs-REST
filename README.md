@@ -77,6 +77,8 @@ Tempo Médio: REST (119.33 ms) vs GraphQL (160.15 ms).
 
 Tamanho Médio (Payload): REST (19.496 bytes) vs GraphQL (1.074 bytes).
 
+![Graficos dos resultados](dashboard_final.png)
+
 ## 11. Discussão e Respostas às Perguntas de Pesquisa
 
 RQ1. Respostas às consultas GraphQL são mais rápidas que respostas às consultas REST? Resposta: Não necessariamente. No experimento, o REST foi ligeiramente mais rápido em média (119ms contra 160ms).
