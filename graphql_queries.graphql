@@ -1,8 +1,0 @@
-# graphql_queries.graphql
-{
-users {
-id
-name
-email
-}
-}
