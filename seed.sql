@@ -1,5 +1,0 @@
-# seed.sql
-INSERT INTO users (name, email) VALUES
-('Alice', 'alice@example.com'),
-('Bob', 'bob@example.com'),
-('Carol', 'carol@example.com');
